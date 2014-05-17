@@ -16,7 +16,7 @@ public class Screen {
     private int width, height;
     public int[] pixels;
     
-    private int time = 0;
+    private int xtime = 0, ytime = 0;
     private int counter = 0;
 
     public Screen(int width, int height) {
@@ -24,7 +24,7 @@ public class Screen {
         this.width = width;
         this.height = height;
 
-        pixels = new int[width * height];
+        pixels = new int[width * height];//50.400 array is 0 - 50.399
 
 
     }
@@ -37,16 +37,16 @@ public class Screen {
 
     public void render() {
         counter++;
-        if(counter % 100 == 0){
-            time++;
-            
-        }
+        if(counter % 100 == 0)xtime++;
+        if(counter % 80 == 0 )ytime++;
         
         for (int y = 0; y < height; y++) {
+            if(ytime < 0 ||ytime>= height)break;
             for (int x = 0; x < width; x++) {
+                if(xtime < 0 ||xtime>= width)break;
+                pixels[xtime + ytime *width] = 0xff00ff;
+                pixels[xtime + ytime * width] = 0xff00ff;
                 
-                pixels[(time+10)+(time+10) *width] = 0xff00ff;
-                pixels[time + time * width] = 0xff00ff;
             }
 
         }

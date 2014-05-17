@@ -21,6 +21,7 @@ public class Game extends Canvas implements Runnable {
     public static int width = 300;
     public static int height = width / 16 * 9;
     public static int scale = 3;
+    public static String title = "pacman";
     private boolean running = false;
     public Timer timer;
     private Thread thread;
@@ -29,6 +30,8 @@ public class Game extends Canvas implements Runnable {
     private BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
     private int[] pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
 
+    
+    
     public Game() {
         Dimension size = new Dimension(width * scale, height * scale);
         setPreferredSize(size);
@@ -59,14 +62,39 @@ public class Game extends Canvas implements Runnable {
     // the game loop
     @Override
     public void run() {
+        long lastTime = System.nanoTime();
+        long Timer =  System.currentTimeMillis();
+        String fpscounter;
+        final double ns = 1000000000.0/ 60.0;
+        double delta = 0;      
+        int frames = 0, updates = 0 ;
         while (running) {
-            update();
+            long now = System.nanoTime();
+            delta += (now - lastTime)/ ns;
+            lastTime = now;
+            
+            while(delta >= 1){
+                update();
+                updates++;
+                delta--;                
+            }
             render();
-
+            frames++;
+            
+            if(System.currentTimeMillis() - Timer > 1000){
+                Timer+= 1000;
+                fpscounter =  updates +" ups|"+frames+" fps";
+                frame.setTitle(title+ " | " + fpscounter );
+                updates = 0;
+                frames = 0;
+            }            
         }
+        stop();
 
     }
 
+    
+    
     public void update() {
     }
 
@@ -101,7 +129,7 @@ public class Game extends Canvas implements Runnable {
 
         // setting up the frame
         game.frame.setResizable(false);
-        game.frame.setTitle("Pacman");
+        game.frame.setTitle(game.title);
         game.frame.add(game);
         game.frame.pack();
         game.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
